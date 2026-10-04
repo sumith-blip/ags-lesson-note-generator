@@ -10,7 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-API_KEY = "AQ.Ab8RN6JwFd8bFSNr53EV14qrUezadgggzs8JSi0guZssNvanuQ"
+API_KEY = "AQ.Ab8RN6J6sSWZeK9-XxPDZoyjneHtNAwyNPV7C1qSZY70fscK-Q"
 genai.configure(api_key=API_KEY)
 
 # භාෂාව තෝරාගැනීමේ විකල්ප (Radio Buttons)
@@ -25,16 +25,12 @@ if lang == "English":
     title_text = "📚 AGS Lesson Note Generator (Multilingual)"
     desc_text = "Enter details and upload the lesson page image. The AGS note will be generated successfully."
     grade_label = "Grade"
-    grade_placeholder = "e.g., 09"
     period_label = "Period"
-    period_placeholder = "e.g., 02"
     subject_label = "Subject"
-    subject_placeholder = "e.g., ICT"
     lesson_label = "Lesson Name"
-    lesson_placeholder = "e.g., Characteristics of Computers"
     upload_label = "📷 Click here to Capture Photo or Upload Lesson Page"
     btn_label = "Generate AGS Lesson Note"
-    spinner_text = "Generating AGS Lesson Note..."
+    spinner_text = "Generating AGS Lesson Note using Gemini 3.6 Flash..."
     success_text = "AGS Lesson Note generated successfully!"
     print_btn_text = "🖨️ Save / Print as Landscape PDF"
     
@@ -53,16 +49,12 @@ elif lang == "தமிழ்":
     title_text = "📚 AGS பாடக் குறிப்பு உருவாக்கி (Multilingual)"
     desc_text = "விவரங்களை உள்ளிட்டு பாடப் பக்கத்தின் படத்தை பதிவேற்றவும்."
     grade_label = "தரம் (Grade)"
-    grade_placeholder = "எ.கா: 09"
     period_label = "காலம் (Period)"
-    period_placeholder = "எ.கா: 02"
     subject_label = "பாடம் (Subject)"
-    subject_placeholder = "எ.கா: ICT"
     lesson_label = "பாடத்தின் பெயர் (Lesson Name)"
-    lesson_placeholder = "எ.கா: கணினியின் சிறப்பியல்புகள்"
     upload_label = "📷 புகைப்படத்தைப் பிடிக்க அல்லது பாடப் பக்கத்தைப் பதிவேற்ற இங்கே கிளிக் செய்யவும்"
     btn_label = "AGS பாடக் குறிப்பை உருவாக்கவும்"
-    spinner_text = "பாடக் குறிப்பு உருவாக்கப்படுகிறது..."
+    spinner_text = "Gemini 3.6 Flash மூலம் பாடக் குறிப்பு உருவாக்கப்படுகிறது..."
     success_text = "AGS பாடக் குறிப்பு வெற்றிகரமாக உருவாக்கப்பட்டது!"
     print_btn_text = "🖨️ Landscape PDF ஆக சேமிக்க / அச்சிட"
 
@@ -81,16 +73,12 @@ else:  # සිංහල
     title_text = "📚 AGS දින සටහන් ස්වයංක්‍රීය ජනක යන්ත්‍රය"
     desc_text = "අවශ්‍ය තොරතුරු ඇතුළත් කර ඡායාරූපය උඩුගත කළ විට, AGS දින සටහන නිවැරදිව සකසනු ලැබේ."
     grade_label = "ශ්‍රේණිය"
-    grade_placeholder = "උදා: 09"
     period_label = "කාලච්ඡේදය"
-    period_placeholder = "උදා: 02"
     subject_label = "විෂය"
-    subject_placeholder = "උදා: ICT"
     lesson_label = "පාඩමේ නම"
-    lesson_placeholder = "උදා: පරිගණකයේ ලක්ෂණ"
     upload_label = "📷 ඡායාරූපයක් ලබා ගැනීමට හෝ පාඩමේ පිටුව Upload කිරීමට මෙතැන ක්ලික් කරන්න"
     btn_label = "AGS දින සටහන සකසන්න"
-    spinner_text = "AGS දින සටහන සකස් කරමින් පවතී... ටිකක් රැඳී සිටින්න..."
+    spinner_text = "Gemini 3.6 Flash මඟින් AGS දින සටහන සකස් කරමින් පවතී... ටිකක් රැඳී සිටින්න..."
     success_text = "AGS දින සටහන සාර්ථකව සකස් කරන ලදී!"
     print_btn_text = "🖨️ Landscape PDF ලෙස Save / Print කරගන්න"
 
@@ -121,8 +109,6 @@ with st.form("lesson_form"):
         
     lesson_name = st.text_input(lesson_label, value="පරිගණකයේ ලක්ෂණ")
     
-    # මෙහිදී file_uploader භාවිතා කර ඇති අතර, දුරකථනයෙන් මෙය ක්ලික් කළ විට
-    # කැමරාවෙන් අලුතින් ඡායාරූපයක් ගැනීමට (Take Photo) හෝ Gallery එකෙන් තෝරා ගැනීමට දුරකථනය මඟින් මෙනුවක් පෙන්වයි.
     uploaded_file = st.file_uploader(upload_label, type=["png", "jpg", "jpeg"])
     
     submit_btn = st.form_submit_button(btn_label)
@@ -131,17 +117,17 @@ if submit_btn:
     with st.spinner(spinner_text):
         ai_text = ""
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # Gemini 3.6 Flash ආකෘතිය භාවිත කිරීම
+            model = genai.GenerativeModel('gemini-3.6-flash')
             
             if lang == "English":
                 prompt = f"""
                 You are an expert school teacher. Generate a detailed AGS lesson note for Grade {grade}, Subject {subject}, Lesson '{lesson_name}'.
-                Include characteristics of computers like speed, accuracy, storage, diligence, and automatic operation.
                 
-                Format your output starting with these exact tags:
-                [ඉගෙනුම්ඵල] (Write specific learning outcomes)
-                [ගුණාත්මක යෙදුම්] (List required materials)
-                [ගුරු කාර්යය] (Write 3 specific teacher activities as bullet points)
+                Format your output strictly starting with these exact tags:
+                [ඉගෙනුම්ඵල] (Write specific learning outcomes for this lesson)
+                [ගුණාත්මක යෙදුම්] (List required materials and equipment)
+                [ගුරු කාර්යය] (Write 3 specific teacher activities as bullet points or lines)
                 [සිසු කාර්යය] (Write student activity)
                 [තක්සේරු ඇගයීම] (Write assessment method)
                 """
@@ -152,7 +138,7 @@ if submit_btn:
                 விடைகளை இந்தத் குறிச்சொற்களுடன் தொடங்கவும்:
                 [ඉගෙනුම්ඵල] (கற்றல் விளைவுகள்)
                 [ගුණාත්මක යෙදුම්] (தேவையான பொருட்கள்)
-                [ගුරු කාර්යය] (ஆசிரியர் செயல்பாடு - 3 புள்ளி விவரங்கள்)
+                [ගුරු කාර්යය] (ஆசிரியர் செயல்பாடு)
                 [සිසු කාර්යය] (மாணவர் செயல்பாடு)
                 [තක්සේරු ඇගයීම] (மதிப்பீடு)
                 """
@@ -161,11 +147,11 @@ if submit_btn:
                 ඔබ දක්ෂ පාසල් ගුරුවරයෙකි. ශ්‍රේණිය {grade}, විෂය {subject}, පාඩම '{lesson_name}' සඳහා AGS දින සටහන සකස් කරන්න.
                 
                 පිළිතුරු හරියටම මෙම මූල පද (Tags) සමඟ ආරම්භ කරන්න:
-                [ඉගෙනුම්ඵල] (පරිගණකයක ප්‍රධාන ලක්ෂණ (වේගය, නිවැරදිභාවය, මතක ධාරිතාව, ස්වයංක්‍රීයභාවය) හඳුනා ගැනීම සහ ඒවායේ වැදගත්කම අවබෝධ කර ගැනීම.)
-                [ගුණාත්මක යෙදුම්] (1. 9 වන ශ්‍රේණිය ICT පෙළපොත\n2. පරිගණක පද්ධති රූපසටහන් හෝ ප්‍රස්ථාර)
-                [ගුරු කාර්යය] (පරිගණකයේ ප්‍රධාන ලක්ෂණ වන වේගය (Speed) සහ නිවැරදිභාවය (Accuracy) උදාහරණ සහිතව පැහැදිලි කිරීම.\nවිශාල දත්ත ප්‍රමාණ ගබඩා කිරීමේ හැකියාව සහ ස්වයංක්‍රීයව ක්‍රියා කිරීමේ ස්වභාවය සාකච්ඡා කිරීම.\nසිසුන් ලවා ප්‍රධාන ලක්ෂණ පුවරුවේ ලියවා ගනිමින් අවබෝධය පරීක්ෂා කිරීම.)
-                [සිසු කාර්යය] (විෂය කරුණු සටහන් කර ගැනීම, පරිගණක ලක්ෂණ උදාහරණ සමඟ සංසන්දනය කිරීම සහ ගුරුතුමා/තුමිය අසන ප්‍රශ්නවලට පිළිතුරු සැපයීම.)
-                [තක්සේරු ඇගයීම] (වාචික ප්‍රශ්නෝත්තර, පන්ති කාමර ක්‍රියාකාරකම් සහ අභ්‍යාස පරීක්ෂා කිරීම මඟින් ඇගයීම.)
+                [ඉගෙනුම්ඵල] (මෙම පාඩමට අදාළ විශේෂ ඉගෙනුම් ඵල ලියන්න)
+                [ගුණාත්මක යෙදුම්] (අවශ්‍ය ඉගැන්වීම් උපකරණ සහ ද්‍රව්‍ය ලියන්න)
+                [ගුරු කාර්යය] (ගුරු ක්‍රියාකාරකම් 3ක් වෙන වෙනම ලියන්න)
+                [සිසු කාර්යය] (සිසුන් විසින් සිදු කළ යුතු ක්‍රියාකාරකම් ලියන්න)
+                [තක්සේරු ඇගයීම] (ඇගයීම් ක්‍රමවේදය ලියන්න)
                 """
             
             if uploaded_file:
@@ -177,26 +163,14 @@ if submit_btn:
             ai_text = response.text if response else ""
         except Exception as e:
             ai_text = ""
+            st.error(f"AI Connection Error: {e}")
 
-        # Reliable Rich Content Fallback for "පරිගණකයේ ලක්ෂණ"
-        if lang == "English":
-            res_outcome = f"Identifying the core characteristics of computers such as speed, accuracy, and storage capacity."
-            res_materials = "1. ICT Textbook<br/>2. Computer system / Charts"
-            res_teacher = "<li>Explaining computer characteristics like speed and accuracy.</li><li>Discussing storage and automatic processing capabilities.</li><li>Engaging students in comparison activities.</li>"
-            res_student = "Taking notes on computer features and answering questions."
-            res_assessment = "Asking short questions about computer characteristics."
-        elif lang == "தமிழ்":
-            res_outcome = f"கணினியின் சிறப்பியல்புகளை அடையாளம் காணுதல்."
-            res_materials = "1. பாடநூல்<br/>2. கணினி விளக்கப்படங்கள்"
-            res_teacher = "<li>வேகம் மற்றும் துல்லியம் போன்ற கணினி பண்புகளை விளக்குதல்.</li><li>நினைவக திறனைப் பற்றி விவாதித்தல்.</li><li>மாணவர் பயிற்சிகளைச் சோதித்தல்.</li>"
-            res_student = "குறிப்புகளை எழுதுதல் மற்றும் கேள்விகளுக்குப் பதிலளித்தல்."
-            res_assessment = "மதிப்பீட்டு வினாக்கள்."
-        else:
-            res_outcome = "පරිගණකයක ප්‍රධාන ලක්ෂණ (වේගය, නිවැරදිභාවය, මතක ධාරිතාව, ස්වයංක්‍රීයභාවය) හඳුනා ගැනීම සහ ඒවායේ වැදගත්කම අවබෝධ කර ගැනීම."
-            res_materials = "1. 9 වන ශ්‍රේණිය ICT පෙළපොත<br/>2. පරිගණක පද්ධති රූපසටහන් හෝ ප්‍රස්ථාර"
-            res_teacher = "<li>පරිගණකයේ ප්‍රධාන ලක්ෂණ වන වේගය (Speed) සහ නිවැරදිභාවය (Accuracy) උදාහරණ සහිතව පැහැදිලි කිරීම.</li><li>විශාල දත්ත ප්‍රමාණ ගබඩා කිරීමේ හැකියාව සහ ස්වයංක්‍රීයව ක්‍රියා කිරීමේ ස්වභාවය සාකච්ඡා කිරීම.</li><li>සිසුන් ලවා ප්‍රධාන ලක්ෂණ පුවරුවේ ලියවා ගනිමින් අවබෝධය පරීක්ෂා කිරීම.</li>"
-            res_student = "විෂය කරුණු සටහන් කර ගැනීම, පරිගණක ලක්ෂණ උදාහරණ සමඟ සංසන්දනය කිරීම සහ ගුරුතුමා/තුමිය අසන ප්‍රශ්නවලට පිළිතුරු සැපයීම."
-            res_assessment = "වාචික ප්‍රශ්නෝත්තර, පන්ති කාමර ක්‍රියාකාරකම් සහ අභ්‍යාස පරීක්ෂා කිරීම මඟින් ඇගයීම."
+        # AI මඟින් ලැබෙන දත්ත ලබාගැනීම සඳහා වන සැකසුම්
+        res_outcome = "දත්ත ලබාගත නොහැකි විය."
+        res_materials = "දත්ත ලබාගත නොහැකි විය."
+        res_teacher = "<li>දත්ත ලබාගත නොහැකි විය.</li>"
+        res_student = "දත්ත ලබාගත නොහැකි විය."
+        res_assessment = "දත්ත ලබාගත නොහැකි විය."
 
         if ai_text:
             def get_tag_content(tag_name, text):
